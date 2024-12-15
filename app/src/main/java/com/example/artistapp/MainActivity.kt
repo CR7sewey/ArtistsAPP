@@ -2,10 +2,12 @@ package com.example.artistapp
 
 import android.media.Image
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -14,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -38,10 +42,21 @@ class MainActivity : ComponentActivity() {
         setContent {
             ArtistAPPTheme {
                 Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    ArtistCard(
+                    val leoDaVinci = Artist("Leonardo da Vinci","2024-02-12", image = R.drawable.ic_leonardo_da_vinci, art = R.drawable.ic_mona_lisa)
+                    val picasso = Artist("Pablo Picasso","2024-02-11", image = R.drawable.ic_pablo_picasso, art = R.drawable.ic_beijo)
+                    val dali = Artist("Salvador Dali","2024-02-14", image = R.drawable.ic_salvador_dali, art = R.drawable.ic_persistence_of_memory)
+                    val vanGogh = Artist("Van Gogh","2024-02-14", image = R.drawable.ic_vincent_van_gogh, art = R.drawable.ic_starry_night)
+                    val listArtist: List<Artist> = listOf(leoDaVinci,picasso,dali,vanGogh)
+                    LazyColumn {
+                        items(listArtist) {
+                            artist ->ArtistCard(artist, modifier = Modifier.padding(innerPadding), onClick = {
+                                Log.i("Name", artist.name)
+                        }) }
+                        }
+                    /*ArtistCard(
                         Artist("Miguel","2024-02-12", image = R.drawable.ic_leonardo_da_vinci, art = R.drawable.ic_persistence_of_memory)
                         ,modifier = Modifier.padding(innerPadding)
-                    )
+                    )*/
                 }
             }
         }
@@ -49,8 +64,11 @@ class MainActivity : ComponentActivity() {
 }
 
 @Composable
-fun ArtistCard(artist: Artist, modifier: Modifier = Modifier) {
-    Column (modifier = modifier.padding(8.dp)) {
+fun ArtistCard(
+    artist: Artist,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit) {
+    Column (modifier = modifier.padding(8.dp).clickable(onClick=onClick)) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
                 painter = painterResource(id = artist.image),
@@ -93,6 +111,15 @@ data class Artist(
 @Composable
 fun GreetingPreview() {
     ArtistAPPTheme {
-        ArtistCard(Artist("Miguel","2024-02-12", image = R.drawable.ic_leonardo_da_vinci, art = R.drawable.ic_persistence_of_memory))
-    }
+        val leoDaVinci = Artist("Leonardo da Vinci","2024-02-12", image = R.drawable.ic_leonardo_da_vinci, art = R.drawable.ic_mona_lisa)
+        val picasso = Artist("Pablo Picasso","2024-02-11", image = R.drawable.ic_pablo_picasso, art = R.drawable.ic_beijo)
+        val dali = Artist("Salvador Dali","2024-02-14", image = R.drawable.ic_salvador_dali, art = R.drawable.ic_persistence_of_memory)
+        val vanGogh = Artist("Van Gogh","2024-02-14", image = R.drawable.ic_vincent_van_gogh, art = R.drawable.ic_starry_night)
+        val listArtist: List<Artist> = listOf(leoDaVinci,picasso,dali,vanGogh)
+        LazyColumn {
+            items(listArtist) {
+                    artist ->ArtistCard(artist, onClick = {
+                Log.i("Name", artist.name)
+            }) }
+        }    }
 }
